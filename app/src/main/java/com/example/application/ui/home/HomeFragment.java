@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.application.R;
 
@@ -33,6 +35,10 @@ public class HomeFragment extends Fragment {
         View carpanter = root.findViewById(R.id.carpenter_img);
         View plumber = root.findViewById(R.id.plumber_img);
         View services = root.findViewById(R.id.service_img);
+        RecyclerView contactlist = (RecyclerView) root.findViewById(R.id.contacts);
+        contactlist.setLayoutManager(new LinearLayoutManager(getContext()));
+        String[] contacts ={"shahzil","ALi","shahzil","Moiz","raja","shahzal chudary","kant","shoaib"};
+        contactlist.setAdapter(new myadopter(contacts));
 
         electrition.setOnClickListener(new View.OnClickListener() {
             @Override
