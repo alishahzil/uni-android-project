@@ -28,6 +28,12 @@
             android:name="myArg"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_notification"
+        android:name="com.example.application.ui.mainnotification.MainnotificationFragment"
+        android:label="@string/menu_notification"
+        tools:layout="@layout/mainnotification_fragment" />
+
 
     <fragment
         android:id="@+id/nav_gallery"
@@ -40,4 +46,9 @@
         android:name="com.example.application.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+    <fragment
+        android:id="@+id/nav_help"
+        android:name="com.example.application.ui.mainhelp.MainhelpFragment"
+        android:label="@string/menu_help"
+        tools:layout="@layout/mainhelp_fragment" />
 </navigation>
