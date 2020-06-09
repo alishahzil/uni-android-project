@@ -14,4 +14,5 @@
     <string name="home_second">Home Second</string>
     <string name="menu_help">Help</string>
     <string name="menu_notification">Notification</string>
+    <string name="title_activity_maps_activityuser">Map</string>
 </resources>
