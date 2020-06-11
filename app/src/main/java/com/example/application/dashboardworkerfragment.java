@@ -19,7 +19,7 @@ public class dashboardworkerfragment extends Fragment {
 
     }
 }
-public class Worker_map extends FragmentActivity implements OnMapReadyCallback,
+/*public class Worker_map extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener {
@@ -230,4 +230,4 @@ public class Worker_map extends FragmentActivity implements OnMapReadyCallback,
         finish();
     }
 
-}
+}*/

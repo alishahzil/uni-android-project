@@ -1,13 +1,26 @@
 package com.example.application;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.errorprone.annotations.Var;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -19,6 +32,7 @@ import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    String email,name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +41,27 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        final NavigationView navigationView = findViewById(R.id.nav_view);
+        final String userid = getIntent().getStringExtra("userid");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Toast.makeText(getApplicationContext(),"you here 1",Toast.LENGTH_LONG).show();
+
+        DocumentReference docRef = db.collection("users").document(userid);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                name =documentSnapshot.getString("username");
+                email =documentSnapshot.getString("email") ;
+                Toast.makeText(getApplicationContext(),name,Toast.LENGTH_LONG).show();
+                View headerView = navigationView.getHeaderView(0);
+                TextView navUsername = (TextView) headerView.findViewById(R.id.username);
+                TextView navemail = (TextView) headerView.findViewById(R.id.email);
+                navUsername.setText(name);
+                navemail.setText(email);
+            }
+        });
+
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(

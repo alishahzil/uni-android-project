@@ -63,7 +63,7 @@
             android:textColorHint="#2CA7E0"></EditText>
 
         <EditText
-            android:id="@+id/lname"
+            android:id="@+id/Addresss"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -105,6 +105,7 @@
             android:textColorHint="#2CA7E0"></EditText>
 
         <Button
+            android:id="@+id/buttons"
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
