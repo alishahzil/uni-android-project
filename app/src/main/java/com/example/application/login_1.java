@@ -18,6 +18,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+
 public class login_1 extends AppCompatActivity {
 
     TextView txt_s;
@@ -56,13 +59,24 @@ public class login_1 extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                   String userid=mAuth.getUid();
+                                    try {
+                                        FileOutputStream fileout=openFileOutput("mytextfile.txt", MODE_PRIVATE);
+                                        OutputStreamWriter outputWriter=new OutputStreamWriter(fileout);
+                                        outputWriter.write(userid);
+                                        outputWriter.close();
+                                        Toast.makeText(getBaseContext(), "File saved successfully!",
+                                                Toast.LENGTH_SHORT).show();
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
 
                                   Intent intent=new Intent(login_1.this,MainActivity.class);
-                                  intent.putExtra("userid", userid);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                   startActivity(intent);
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Toast.makeText(getApplicationContext(),"Email/password wrong",Toast.LENGTH_LONG).show();
+
+                                } else {// If sign in fails, display a message to the user.
+                                    Toast.makeText(getApplicationContext(),"Email or password wrong",Toast.LENGTH_LONG).show();
                                 }
 
                                 // ...

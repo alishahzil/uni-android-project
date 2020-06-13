@@ -1,9 +1,14 @@
 package com.example.application;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.errorprone.annotations.Var;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,6 +27,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -29,10 +36,19 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     String email,name;
+    String userid ;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +58,32 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         final NavigationView navigationView = findViewById(R.id.nav_view);
-        final String userid = getIntent().getStringExtra("userid");
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Toast.makeText(getApplicationContext(),"you here 1",Toast.LENGTH_LONG).show();
+        try {
+            FileInputStream fileIn=openFileInput("mytextfile.txt");
 
-        DocumentReference docRef = db.collection("users").document(userid);
+            InputStreamReader InputRead= new InputStreamReader(fileIn);
+
+            char[] inputBuffer= new char[100];
+            String s="";
+            int charRead;
+
+            while ((charRead=InputRead.read(inputBuffer))>0) {
+                // char to string conversion
+                String readstring=String.copyValueOf(inputBuffer,0,charRead);
+                s +=readstring;
+                userid =s;
+            }
+            InputRead.close();
+            Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                    .getBoolean("isFirstRun", true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+          FirebaseFirestore db = FirebaseFirestore.getInstance();
+       DocumentReference docRef = db.collection("users").document(userid);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -76,8 +113,30 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+
         return true;
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                FirebaseAuth.getInstance().signOut();
+                try {
+                    Files.delete(Paths.get("mytextfile.txt"));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                Intent it =new Intent(MainActivity.this,  Choice_uw.class);
+                startActivity(it);
+                finish();
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
