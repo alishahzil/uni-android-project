@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 name =documentSnapshot.getString("username");
                 email =documentSnapshot.getString("email") ;
-                Toast.makeText(getApplicationContext(),name,Toast.LENGTH_LONG).show();
                 View headerView = navigationView.getHeaderView(0);
                 TextView navUsername = (TextView) headerView.findViewById(R.id.username);
                 TextView navemail = (TextView) headerView.findViewById(R.id.email);

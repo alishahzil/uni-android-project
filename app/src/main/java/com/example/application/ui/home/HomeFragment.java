@@ -1,10 +1,16 @@
 package com.example.application.ui.home;
 
+import android.content.Intent;
+import android.graphics.ColorSpace;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,13 +22,31 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.application.MapsActivityuser;
 import com.example.application.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
+    FirebaseFirestore db ;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -43,49 +67,56 @@ public class HomeFragment extends Fragment {
         electrition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //  Intent u=new Intent(Choice_uw.this,login_1.class);
-                //  startActivity(u);
-                Toast.makeText(getContext(),"Electriction",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), MapsActivityuser.class);
+                intent.putExtra("field","electriction" );
+                startActivity(intent);
+
+
             }
         });
         work.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //  Intent u=new Intent(Choice_uw.this,login_1.class);
-                //  startActivity(u);
-                Toast.makeText(getContext(),"work",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), MapsActivityuser.class);
+                intent.putExtra("field","work" );
+                startActivity(intent);
+
             }
         });
         plumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //  Intent u=new Intent(Choice_uw.this,login_1.class);
-                //  startActivity(u);
-                Toast.makeText(getContext(),"plumber",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), MapsActivityuser.class);
+                intent.putExtra("field","plumber" );
+                startActivity(intent);
+
             }
         });
         paint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //  Intent u=new Intent(Choice_uw.this,login_1.class);
-                //  startActivity(u);
-                Toast.makeText(getContext(),"paint",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), MapsActivityuser.class);
+                intent.putExtra("field","paint" );
+                startActivity(intent);
+
             }
         });
         carpanter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //  Intent u=new Intent(Choice_uw.this,login_1.class);
-                //  startActivity(u);
-                Toast.makeText(getContext(),"carpenter",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), MapsActivityuser.class);
+                intent.putExtra("field","carpanter" );
+                startActivity(intent);
+
             }
         });
         services.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //  Intent u=new Intent(Choice_uw.this,login_1.class);
-                //  startActivity(u);
-                Toast.makeText(getContext(),"services",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), MapsActivityuser.class);
+                intent.putExtra("field","services" );
+                startActivity(intent);
+
             }
         });
 

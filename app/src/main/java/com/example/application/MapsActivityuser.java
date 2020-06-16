@@ -1,5 +1,6 @@
 package com.example.application;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import android.location.Location;
 import android.os.Build;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -28,9 +30,16 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class MapsActivityuser extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -48,10 +57,12 @@ public class MapsActivityuser extends FragmentActivity implements OnMapReadyCall
         double la ;
         double lo;
         String title;
-        public marks(double la, double lo, String this_is_title) {
+        String workerid;
+        public marks(double la, double lo, String this_is_title, String workerid) {
             this.title=this_is_title;
             this.la=la;
             this.lo=lo;
+            this.workerid=workerid;
         }
         double return_la(){
             return la;
@@ -62,6 +73,7 @@ public class MapsActivityuser extends FragmentActivity implements OnMapReadyCall
         String return_title(){
             return title;
         }
+        String return_workerid(){return workerid;}
     }
     List<marks> list = new ArrayList<marks>();
 
@@ -69,39 +81,212 @@ public class MapsActivityuser extends FragmentActivity implements OnMapReadyCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_activityuser);
+        FirebaseFirestore db;
+
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        double[] lop = {33.6340,33.636504,33.633935,33.639687};
-        double[] lop2 ={72.9229,72.918519,72.915286,72.913258};
-        String[] name={"Moiz free carpenter","Liza Bueaty pearl","shahzil plumber","sqlain sweeper"};
+        Intent myIntent = getIntent();
+        String id = myIntent.getStringExtra("field");
+        final ArrayList<Double> logitude = new ArrayList<Double>();
+        final ArrayList<Double> latitude = new ArrayList<Double>();
+        final ArrayList<String> name = new ArrayList<String>();
+        if (id.equals("electriction")) {
+            db = FirebaseFirestore.getInstance();
+            db.collection("worker").whereEqualTo("field", "electrition")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String lo = (String) document.get("logitude");
+                                    String la = (String) document.get("latitude");
+                                    String names = (String) document.get("name");
+                                    String workerid=document.getId();
+                                    double lod = Double.parseDouble(lo);
+                                    double lad = Double.parseDouble(la);
+                                    logitude.add(lod);
+                                    latitude.add(lad);
+                                    name.add(names);
+                                    marks a = new marks(lod, lad, names,workerid);
+                                    list.add(a);
+                                }
+                            } else {
+                                Log.w(TAG, "Error getting documents.", task.getException());
+                                Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_LONG).show();
+                            }
 
-        for(int i =0;i<lop.length;i++) {
-            marks a = new marks(lop[i], lop2[i], name[i]);
-            list.add(a);
+                        }
+
+
+                    });
+
+        }else if (id.equals("work")){
+            db = FirebaseFirestore.getInstance();
+            db.collection("worker").whereEqualTo("field", "work")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String lo = (String) document.get("logitude");
+                                    String la = (String) document.get("latitude");
+                                    String names = (String) document.get("name");
+                                    String workerid=document.getId();
+                                    double lod = Double.parseDouble(lo);
+                                    double lad = Double.parseDouble(la);
+                                    logitude.add(lod);
+                                    latitude.add(lad);
+                                    name.add(names);
+                                    marks a = new marks(lod, lad, names,workerid);
+                                    list.add(a);
+                                }
+                            } else {
+                                Log.w(TAG, "Error getting documents.", task.getException());
+                                Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+
+
+                    });
+
+        }else if (id.equals("paint")){
+            db = FirebaseFirestore.getInstance();
+            db.collection("worker").whereEqualTo("field", "paint")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String lo = (String) document.get("logitude");
+                                    String la = (String) document.get("latitude");
+                                    String names = (String) document.get("name");
+                                    String workerid=document.getId();
+                                    double lod = Double.parseDouble(lo);
+                                    double lad = Double.parseDouble(la);
+                                    logitude.add(lod);
+                                    latitude.add(lad);
+                                    name.add(names);
+                                    marks a = new marks(lod, lad, names,workerid);
+                                    list.add(a);
+                                }
+                            } else {
+                                Log.w(TAG, "Error getting documents.", task.getException());
+                                Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+
+
+                    });
+
+        }else if (id.equals("carpanter")){
+            db = FirebaseFirestore.getInstance();
+            db.collection("worker").whereEqualTo("field", "carpentar")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String lo = (String) document.get("logitude");
+                                    String la = (String) document.get("latitude");
+                                    String names = (String) document.get("name");
+                                    String workerid=document.getId();
+                                    double lod = Double.parseDouble(lo);
+                                    double lad = Double.parseDouble(la);
+                                    logitude.add(lod);
+                                    latitude.add(lad);
+                                    name.add(names);
+                                    marks a = new marks(lod, lad, names,workerid);
+                                    list.add(a);
+                                }
+                            } else {
+                                Log.w(TAG, "Error getting documents.", task.getException());
+                                Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+
+
+                    });
+
+        }else if (id.equals("plumber")){
+            db = FirebaseFirestore.getInstance();
+            db.collection("worker").whereEqualTo("field", "plumber")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String lo = (String) document.get("logitude");
+                                    String la = (String) document.get("latitude");
+                                    String names = (String) document.get("name");
+                                    String workerid=document.getId();
+                                    double lod = Double.parseDouble(lo);
+                                    double lad = Double.parseDouble(la);
+                                    logitude.add(lod);
+                                    latitude.add(lad);
+                                    name.add(names);
+                                    marks a = new marks(lod, lad, names,workerid);
+                                    list.add(a);
+                                }
+                            } else {
+                                Log.w(TAG, "Error getting documents.", task.getException());
+                                Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+
+
+                    });
+
+        }else if (id.equals("services")){
+            db = FirebaseFirestore.getInstance();
+            db.collection("worker").whereEqualTo("field", "services")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String lo = (String) document.get("logitude");
+                                    String la = (String) document.get("latitude");
+                                    String names = (String) document.get("name");
+                                    String workerid=document.getId();
+                                    double lod = Double.parseDouble(lo);
+                                    double lad = Double.parseDouble(la);
+                                    logitude.add(lod);
+                                    latitude.add(lad);
+                                    name.add(names);
+                                    marks a = new marks(lod, lad, names,workerid);
+                                    list.add(a);
+                                }
+                            } else {
+                                Log.w(TAG, "Error getting documents.", task.getException());
+                                Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+
+
+                    });
+
         }
-
-
-     /*   for (int i = 1; i <= 1; i++){
-            markers[i] = new  marks();
-            markers[i].latLng=latLngs;
-            markers[i].title="this is ali shahzil";
-            j=+1;
-        }*/
-
     }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-
-        //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
@@ -155,6 +340,7 @@ public class MapsActivityuser extends FragmentActivity implements OnMapReadyCall
         }
 
         //Place current location marker
+
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
@@ -163,30 +349,31 @@ public class MapsActivityuser extends FragmentActivity implements OnMapReadyCall
         mCurrLocationMarker = mMap.addMarker(markerOptions);
 
 
-        for (int i=0 ;i<=3;i++) {
-            // MarkerOptions currentmarker = markers.get(i);
+        for (int i=0 ;i<list.size();i++) {
             double las  = list.get(i).return_la(); ;
             double los = list.get(i).return_lo();
             String titles=list.get(i).return_title();
+            String workerid=list.get(i).return_workerid();
+
+
 
             MarkerOptions markerOptionss = new MarkerOptions();
             LatLng latLngs = new LatLng(las, los);
             markerOptionss.position(latLngs);
             markerOptionss.title(titles);
+            markerOptionss.snippet(workerid);
             markerOptionss.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
             mCurrLocationMarker = mMap.addMarker(markerOptionss);
         }
        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-
                 String venueID = marker.getId();
-                String venueName = marker.getTitle();
-                // Toast.makeText(getApplicationContext(),"move to an other activity"+venueID+"   "+
+                String workerid = marker.getSnippet();
                 if(!(venueID.equals("m0"))) {
                     Intent intent = new Intent(MapsActivityuser.this, usersdashboard.class);
-                    intent.putExtra("venuename", venueName);
-                    intent.putExtra("venname", venueID);
+                    intent.putExtra("workerid", workerid);
+
                     startActivity(intent);
                 }
                 return false;
