@@ -370,10 +370,10 @@ public class MapsActivityuser extends FragmentActivity implements OnMapReadyCall
             public boolean onMarkerClick(Marker marker) {
                 String venueID = marker.getId();
                 String workerid = marker.getSnippet();
+                marker.setSnippet("");
                 if(!(venueID.equals("m0"))) {
-                    Intent intent = new Intent(MapsActivityuser.this, usersdashboard.class);
+                    Intent intent = new Intent(MapsActivityuser.this, userdashboard.class);
                     intent.putExtra("workerid", workerid);
-
                     startActivity(intent);
                 }
                 return false;
