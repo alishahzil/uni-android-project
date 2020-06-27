@@ -43,13 +43,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class MainActivity extends AppCompatActivity {
-
     private AppBarConfiguration mAppBarConfiguration;
     String email,name;
     String userid ;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

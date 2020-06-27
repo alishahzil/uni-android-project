@@ -3,6 +3,8 @@ package com.example.application;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,8 @@ import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.example.application.R.drawable.invisiblebutton;
+
 public class userdashboard extends AppCompatActivity {
     String workerid;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -42,6 +47,7 @@ public class userdashboard extends AppCompatActivity {
     String userid;
     Timer myTimer;
     TimerTask doThis;
+    RatingBar rate;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -59,9 +65,11 @@ public class userdashboard extends AppCompatActivity {
         call = findViewById(R.id.callbutton);
         bill = findViewById(R.id.bill);
         status = findViewById(R.id.status);
+       rate = (RatingBar) findViewById(R.id.ratingBar);
+
+
+
         final Chronometer time = (Chronometer) findViewById(R.id.chrono);
-
-
         myTimer = new Timer();
         final int delay = 1000;
         final int period = 2000;
@@ -92,11 +100,14 @@ public class userdashboard extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
                 String request = "Your request is set to the worker";
-                Map<String, Object> user = new HashMap<>();
+                final Map<String, Object> user = new HashMap<>();
+
                 user.put("userid", userid);
                 user.put("workerid", workerid);
                 user.put("accepted", "false");
+                user.put("worker_phone", "");
                 user.put("coming", "not");
                 user.put("arrived", "not");
                 user.put("totalbill", "0");
@@ -113,9 +124,6 @@ public class userdashboard extends AppCompatActivity {
                                     OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
                                     outputWriter.write(data);
                                     outputWriter.close();
-                                    Toast.makeText(getBaseContext(), "File saved successfully!",
-                                            Toast.LENGTH_SHORT).show();
-
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -130,13 +138,33 @@ public class userdashboard extends AppCompatActivity {
                                         .update(
                                                 "jobsid", data
                                         );
+                                final DocumentReference docRef = db.collection("worker").document(workerid);
+                                final String finalS = data;
+                                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                String phone;
+                                                phone = (String) document.get("phone");
+                                                db.collection("jobs")
+                                                        .document(finalS)
+                                                        .update(
+                                                                "worker_phone", phone
+                                                        );
+                                            }
+                                        }
+                                    }
+                                });
+
+
                             }
                         });
                 status.setText(request);
                 endtime.setEnabled(false);
                 sendrequest.setEnabled(false);
-                sendrequest.setBackgroundResource(R.drawable.invisiblebutton);
-
+                sendrequest.setBackgroundResource(invisiblebutton);
 
                 doThis = new TimerTask() {
                     public void run() {
@@ -172,24 +200,38 @@ public class userdashboard extends AppCompatActivity {
                                         String names = "nothing";
                                         String coming = "not";
                                         String arrived = "not";
+                                        String phone ="";
+                                        String rating ="";
+                                        String avalible ="";
+
 
                                         names = (String) document.get("accepted");
                                         coming = (String) document.get("coming");
                                         arrived = (String) document.get("arrived");
+                                        phone = (String) document.get("worker_phone");
+                                        avalible=(String) document.get("avaliable");
+
+
 
 
                                         String trues = "true";
-                                        Log.w("names", names);
-                                        if (names.equals(trues)) {
-                                            status.setText("worker accepted the job");
-                                            if (coming.equals("yes")) {
-                                                status.setText("your worker coming");
-                                                if (arrived.equals("yes")) {
-                                                    status.setText("Worker arrived!..click the arrived button to confirm ");
-                                                    workerarrived.setEnabled(true);
-                                                    workerarrived.setBackgroundResource(R.drawable.button);
+                                        if(avalible.equals("yes")) {
+                                            if (names.equals(trues)) {
+                                                status.setText("worker accepted the job");
+                                                phoneno.setText(phone);
+                                                call.setEnabled(true);
+                                                call.setBackgroundResource(R.drawable.button);
+                                                if (coming.equals("yes")) {
+                                                    status.setText("your worker coming");
+                                                    if (arrived.equals("yes")) {
+                                                        status.setText("Worker arrived!..click the arrived button to confirm ");
+                                                        workerarrived.setEnabled(true);
+                                                        workerarrived.setBackgroundResource(R.drawable.button);
+                                                    }
                                                 }
                                             }
+                                        }else{
+                                            status.setText("worker not avaible");
                                         }
                                     } else {
                                         Log.w("doucment", "No such document");
@@ -210,10 +252,18 @@ public class userdashboard extends AppCompatActivity {
             public void onClick(View v) {
                 doThis.cancel();
                 workerarrived.setEnabled(false);
-                workerarrived.setBackgroundResource(R.drawable.invisiblebutton);
+                workerarrived.setBackgroundResource(invisiblebutton);
                 starttime.setEnabled(true);
                 starttime.setBackgroundResource(R.drawable.button);
 
+            }
+        });
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String callphone = phoneno.getText().toString();
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", callphone, null));
+                startActivity(intent);
             }
         });
         starttime.setOnClickListener(new View.OnClickListener() {
@@ -223,8 +273,6 @@ public class userdashboard extends AppCompatActivity {
                 time.start();
                 endtime.setEnabled(true);
                 endtime.setBackgroundResource(R.drawable.button);
-
-
             }
         });
         endtime.setOnClickListener(new View.OnClickListener() {
@@ -232,6 +280,8 @@ public class userdashboard extends AppCompatActivity {
             public void onClick(View v) {
                 time.stop();
                 status.setText("Calculation bill");
+                starttime.setEnabled(false);
+                starttime.setBackgroundResource(invisiblebutton);
                 long totaltime = SystemClock.elapsedRealtime() - time.getBase();
                 long totalbill = totaltime * 25;
 
@@ -244,7 +294,6 @@ public class userdashboard extends AppCompatActivity {
                     while ((charRead = InputRead.read(inputBuffer)) > 0) {
                         String readstring = String.copyValueOf(inputBuffer, 0, charRead);
                         s += readstring;
-
                     }
                     db.collection("jobs")
                             .document(s)
@@ -256,13 +305,15 @@ public class userdashboard extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
+               String totalbills=Long.toString(totalbill);
+                bill.setText(totalbills);
+                status.setText("Bill Calculated");
             }
         });
     }
 
     public void getdata(String workerid) {
+
         final DocumentReference docRef = db.collection("worker").document(workerid);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -270,11 +321,14 @@ public class userdashboard extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+                        String rating;
                         dataname = (String) document.get("name");
                         datalocation = (String) document.get("location");
                         dataphoneno = (String) document.get("phone");
+                        rating = (String) document.get("rating");
                         name.setText(dataname);
                         location.setText(datalocation);
+                        rate.setRating(Float.parseFloat(rating));
                     } else {
                         Log.w("doucment", "No such document");
                         Toast.makeText(getApplicationContext(), "data not exits", Toast.LENGTH_LONG).show();
