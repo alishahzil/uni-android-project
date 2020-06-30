@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.application.R;
 
-class myadopter extends  RecyclerView.Adapter<myadopter.myholder> {
+public class myadopter extends  RecyclerView.Adapter<myadopter.myholder> {
     private Context context ;
     private String[] data;
 

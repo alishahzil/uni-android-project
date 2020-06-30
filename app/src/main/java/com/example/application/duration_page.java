@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.File;
+
 public class duration_page extends AppCompatActivity {
 
     Handler handler;
@@ -35,10 +37,24 @@ public class duration_page extends AppCompatActivity {
             @Override
             public void run() {
                 if (currentUser !=null){
-                    Intent it =new Intent(duration_page.this,  MainActivity.class);
+                    Intent it =new Intent(duration_page.this,  Choice_uw.class);
                     startActivity(it);
                     finish();
+                   /* File file = new File(getApplicationContext().getFilesDir(),"worker.txt");
+                    if(file.exists()){
+                        Intent it =new Intent(duration_page.this,  MainActivity2.class);
+                        startActivity(it);
+                        finish();
 
+
+
+                    }
+                else {
+                        Intent it =new Intent(duration_page.this,  MainActivity.class);
+                        startActivity(it);
+                        finish();
+
+                    }*/
                 }else{
                     Intent it =new Intent(duration_page.this,  Choice_uw.class);
                     startActivity(it);

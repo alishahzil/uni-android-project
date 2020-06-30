@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="5dp">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,14 +15,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycle"
                 android:layout_width="match_parent"
-                android:layout_height="256dp" >
-
-            </ListView>
+                android:layout_height="256dp" />
 
             <TextView
-                android:id="@+id/status"
+                android:id="@+id/workerstatus"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_margin="5dp"
@@ -59,7 +58,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/button"
+                    android:background="@drawable/invisiblebutton"
+                    android:enabled="false"
                     android:text="Call"
                     android:textColor="@android:color/white" />
             </LinearLayout>
@@ -69,7 +69,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@drawable/button"
+                android:background="@drawable/invisiblebutton"
+                android:enabled="false"
                 android:text="location"
                 android:textColor="@android:color/white" />
 
@@ -78,17 +79,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_margin="5dp"
-                android:background="@drawable/button"
+                android:background="@drawable/invisiblebutton"
+                android:enabled="false"
                 android:text="I'm coming "
                 android:textColor="@android:color/white" />
 
             <Button
-                android:id="@+id/button8"
+                android:id="@+id/arrived"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@drawable/button"
+                android:background="@drawable/invisiblebutton"
+                android:enabled="false"
                 android:text="arrived"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/jobcompleted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/invisiblebutton"
+                android:text="job completed"
                 android:textColor="@android:color/white" />
         </LinearLayout>
     </ScrollView>

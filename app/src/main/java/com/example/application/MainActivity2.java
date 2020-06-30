@@ -28,7 +28,6 @@ public class MainActivity2 extends AppCompatActivity {
                     switch (menuItem.getItemId()){
                         case R.id.workernav_home:
                             selectedfragment = new homrworkerfragment();
-
                             break;
                         case R.id.workernav_dashboard:
                             selectedfragment = new dashboardworkerfragment();

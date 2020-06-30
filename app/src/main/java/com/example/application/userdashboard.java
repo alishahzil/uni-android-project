@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -27,10 +26,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -48,14 +45,13 @@ public class userdashboard extends AppCompatActivity {
     Timer myTimer;
     TimerTask doThis;
     RatingBar rate;
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userdashboard);
         Bundle extras = getIntent().getExtras();
         workerid = extras.getString("workerid");
-        name = findViewById(R.id.name);
+        name = findViewById(R.id.name_list);
         location = findViewById(R.id.location);
         phoneno = findViewById(R.id.phoneno);
         sendrequest = findViewById(R.id.sendrequest);
@@ -64,11 +60,8 @@ public class userdashboard extends AppCompatActivity {
         endtime = findViewById(R.id.endtime);
         call = findViewById(R.id.callbutton);
         bill = findViewById(R.id.bill);
-        status = findViewById(R.id.status);
+        status = findViewById(R.id.workerstatus);
        rate = (RatingBar) findViewById(R.id.ratingBar);
-
-
-
         final Chronometer time = (Chronometer) findViewById(R.id.chrono);
         myTimer = new Timer();
         final int delay = 1000;
@@ -99,11 +92,8 @@ public class userdashboard extends AppCompatActivity {
         sendrequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 String request = "Your request is set to the worker";
                 final Map<String, Object> user = new HashMap<>();
-
                 user.put("userid", userid);
                 user.put("workerid", workerid);
                 user.put("accepted", "false");
@@ -157,20 +147,15 @@ public class userdashboard extends AppCompatActivity {
                                         }
                                     }
                                 });
-
-
                             }
                         });
                 status.setText(request);
                 endtime.setEnabled(false);
                 sendrequest.setEnabled(false);
                 sendrequest.setBackgroundResource(invisiblebutton);
-
                 doThis = new TimerTask() {
                     public void run() {
                         String jobid = "nothing here";
-
-
                         try {
                             FileInputStream fileIn = openFileInput("jobid.txt");
                             InputStreamReader InputRead = new InputStreamReader(fileIn);
@@ -180,16 +165,12 @@ public class userdashboard extends AppCompatActivity {
                             while ((charRead = InputRead.read(inputBuffer)) > 0) {
                                 String readstring = String.copyValueOf(inputBuffer, 0, charRead);
                                 s += readstring;
-
                             }
                             jobid = s;
                             InputRead.close();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        Log.w("jobid", jobid);
-
-
                         final DocumentReference docRef = db.collection("jobs").document(jobid);
                         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
@@ -202,20 +183,14 @@ public class userdashboard extends AppCompatActivity {
                                         String arrived = "not";
                                         String phone ="";
                                         String rating ="";
-                                        String avalible ="";
-
-
+                                        String available ="";
                                         names = (String) document.get("accepted");
                                         coming = (String) document.get("coming");
                                         arrived = (String) document.get("arrived");
                                         phone = (String) document.get("worker_phone");
-                                        avalible=(String) document.get("avaliable");
-
-
-
-
+                                       // available=(String) document.get("avaliable");
                                         String trues = "true";
-                                        if(avalible.equals("yes")) {
+
                                             if (names.equals(trues)) {
                                                 status.setText("worker accepted the job");
                                                 phoneno.setText(phone);
@@ -230,9 +205,7 @@ public class userdashboard extends AppCompatActivity {
                                                     }
                                                 }
                                             }
-                                        }else{
-                                            status.setText("worker not avaible");
-                                        }
+
                                     } else {
                                         Log.w("doucment", "No such document");
                                     }
@@ -278,12 +251,15 @@ public class userdashboard extends AppCompatActivity {
         endtime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String totalbill2="";
                 time.stop();
                 status.setText("Calculation bill");
                 starttime.setEnabled(false);
                 starttime.setBackgroundResource(invisiblebutton);
                 long totaltime = SystemClock.elapsedRealtime() - time.getBase();
                 long totalbill = totaltime * 25;
+                totalbill2=Long.toString(totalbill);
+
 
                 try {
                     FileInputStream fileIn = openFileInput("jobid.txt");
@@ -298,7 +274,7 @@ public class userdashboard extends AppCompatActivity {
                     db.collection("jobs")
                             .document(s)
                             .update(
-                                    "totalbill", totalbill,
+                                    "totalbill", totalbill2,
                                     "time", totaltime
                             );
                     InputRead.close();

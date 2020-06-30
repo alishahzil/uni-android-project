@@ -61,7 +61,7 @@ public class HomeFragment extends Fragment {
         View services = root.findViewById(R.id.service_img);
         RecyclerView contactlist = (RecyclerView) root.findViewById(R.id.contacts);
         contactlist.setLayoutManager(new LinearLayoutManager(getContext()));
-        String[] contacts ={"shahzil","ALi","shahzil","Moiz","raja","shahzal chudary","kant","shoaib"};
+        String[] contacts = {"shahzil","ALi","shahzil","Moiz","raja","shahzal chudary","kant","shoaib"};
         contactlist.setAdapter(new myadopter(contacts));
 
         electrition.setOnClickListener(new View.OnClickListener() {
@@ -70,8 +70,6 @@ public class HomeFragment extends Fragment {
                 Intent intent = new Intent(getContext(), MapsActivityuser.class);
                 intent.putExtra("field","electriction" );
                 startActivity(intent);
-
-
             }
         });
         work.setOnClickListener(new View.OnClickListener() {
