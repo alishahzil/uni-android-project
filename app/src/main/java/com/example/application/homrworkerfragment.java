@@ -30,7 +30,7 @@ import java.util.TimerTask;
 
 public class homrworkerfragment extends Fragment {
     TextView status,phone,bill;
-    Button call,location,coming,arrived,jobcompleted;
+    Button call,location,coming,arrived,jobcompleted,calculate_total;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     RecyclerView recyclerView;
     Timer myTimer;
@@ -52,6 +52,7 @@ public class homrworkerfragment extends Fragment {
          coming=root.findViewById(R.id.coming);
          arrived=root.findViewById(R.id.arrived);
          jobcompleted=root.findViewById(R.id.jobcompleted);
+         calculate_total = root.findViewById(R.id.calculatebill);
 
 
         myTimer = new Timer();
@@ -121,22 +122,37 @@ public class homrworkerfragment extends Fragment {
                 Toast.makeText(getContext(),"i am arrived",Toast.LENGTH_LONG).show();
                 arrived.setBackgroundResource(R.drawable.invisiblebutton);
                 arrived.setEnabled(false);
+                calculate_total.setBackgroundResource(R.drawable.button);
+                calculate_total.setEnabled(true);
+
+
+            }
+        });
+        calculate_total.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 jobcompleted.setBackgroundResource(R.drawable.button);
                 jobcompleted.setEnabled(true);
-
+                calculate_total.setBackgroundResource(R.drawable.invisiblebutton);
+                calculate_total.setEnabled(false);
+                getjobid3(workerid);
             }
         });
         jobcompleted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getjobid3(workerid);
+                db.collection("worker")
+                        .document(workerid)
+                        .update(
+                                "jobsid", ""
+                        );
+
+                Intent intent= new Intent(v.getContext(),MainActivity2.class);
+                intent.putExtra("workerid",workerid);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
         });
-
-
-
-
-
         return root;
     }
     void getrequest(final String jobid){
