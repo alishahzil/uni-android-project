@@ -48,6 +48,7 @@ public class login_2 extends AppCompatActivity {
                                     Intent intent = new Intent(login_2.this, MainActivity2.class);
                                     intent.putExtra("workerid",userid);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    //this is new file want to add
                                     startActivity(intent);
 
                                 } else {// If sign in fails, display a message to the user.
