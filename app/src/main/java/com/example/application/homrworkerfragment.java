@@ -17,13 +17,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import java.io.FileOutputStream;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -233,6 +235,15 @@ public class homrworkerfragment extends Fragment {
 
     }
     void userphoneno(String userid){
+        try {
+            FileOutputStream fileout = getContext().openFileOutput("useridmap.txt",getContext().MODE_PRIVATE);
+            OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
+            outputWriter.write(userid);
+            outputWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         final DocumentReference docRef = db.collection("users").document(userid);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -241,7 +252,25 @@ public class homrworkerfragment extends Fragment {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         String  phones = (String) document.get("phone");
+                        String  clatitude = (String) document.get("clatitude");
+                        String  clongitude = (String) document.get("clongitude");
                         phone.setText(phones);
+                        try {
+                            FileOutputStream fileout = getContext().openFileOutput("clatitude.txt",getContext().MODE_PRIVATE);
+                            OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
+                            outputWriter.write(clatitude);
+                            outputWriter.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            FileOutputStream fileout = getContext().openFileOutput("clongitude.txt",getContext().MODE_PRIVATE);
+                            OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
+                            outputWriter.write(clongitude);
+                            outputWriter.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     } else {
                         Log.w("doucment", "No such document");
                     }

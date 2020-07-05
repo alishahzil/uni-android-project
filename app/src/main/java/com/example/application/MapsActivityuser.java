@@ -36,6 +36,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +53,8 @@ public class MapsActivityuser extends FragmentActivity implements OnMapReadyCall
     Location mLastLocation;
     Marker mCurrLocationMarker;
     LocationRequest mLocationRequest;
+    FirebaseFirestore db;
+    String userid;
     double la;
     double lo;
     public class marks{
@@ -81,7 +85,23 @@ public class MapsActivityuser extends FragmentActivity implements OnMapReadyCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_activityuser);
-        FirebaseFirestore db;
+        db = FirebaseFirestore.getInstance();
+
+        try {
+            FileInputStream fileIn = openFileInput("mytextfile.txt");
+            InputStreamReader InputRead = new InputStreamReader(fileIn);
+            char[] inputBuffer = new char[100];
+            String s = "";
+            int charRead;
+            while ((charRead = InputRead.read(inputBuffer)) > 0) {
+                String readstring = String.copyValueOf(inputBuffer, 0, charRead);
+                s += readstring;
+                userid = s;
+            }
+            InputRead.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -335,11 +355,24 @@ public class MapsActivityuser extends FragmentActivity implements OnMapReadyCall
     public void onLocationChanged(Location location) {
 
         mLastLocation = location;
+        String log= String.valueOf(mLastLocation.getAltitude());
+        String let= String.valueOf(mLastLocation.getLongitude());
+        db.collection("users")
+                .document(userid)
+                .update(
+                        "clatitude", log
+                );
+        db.collection("users")
+                .document(userid)
+                .update(
+                        "clongitude",let
+                );
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
 
         //Place current location marker
+
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
